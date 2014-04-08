@@ -61,6 +61,171 @@ namespace cs296
   
   dominos_t::dominos_t()
   {
+	  
+		b2Body* body1;
+		b2Body* body2;
+		b2RevoluteJointDef joint1;
+	  
+	  //!**********Ground************************************************************************************************<br><br>
+		//! Variable name: b1 , Datatype: b2Body* <br>
+		//! Details: Pointer to an instance of rigid body(ground here).
+		b2Body* b1;  
+		{
+			//! Variable name: shape , Datatype: b2EdgeShape <br>
+			//! Details: Represents an edge with end-points as b2Vec2(-90.0f, 0.0f) and b2Vec2(90.0f, 0.0f).
+			b2EdgeShape shape; 
+			shape.Set(b2Vec2(-90.0f, 0.0f), b2Vec2(90.0f, 0.0f));
+
+			//! Variable name: bd , Datatype: b2BodyDef <br>
+			//! Details: Holds the data to construct the rigid body (ground).
+			b2BodyDef bd; 
+			b2FixtureDef groundfd;
+			groundfd.shape = &shape;
+			groundfd.filter.groupIndex = -1;
+			groundfd.filter.categoryBits = 0x0002;
+			groundfd.filter.maskBits = 0x0004;
+
+			//! Details: Body is created in 'm_world' using CreateBody function and pointer returned is stored in 'b1'.<br>
+			//! A fixture is attached to the body using CreateFixture function, passing address of 'shape' and density=0.0f.
+			b1 = m_world->CreateBody(&bd); 
+			b1->CreateFixture(&groundfd);
+		}
+
+		// New Items in the project
+
+		{
+
+			//first part
+			
+			//! Variable names: firstx, firsty, Datatype: float <br>
+			//! Details: Stores the relative origin for the rear claw.
+			float firstx = -44, firsty = 5;
+			
+			//! The below defined three polygon shapes 'poly1', poly2', 'poly3' are used for creation of fixtures for the body 'body1' <br>
+			//! The below defined fixtures are then provided to the body 'body1' <br>
+			//! Fixture attributes: density=0.1f, friction=1.0f, restitution=0.2f <br>
+			b2BodyDef *bd = new b2BodyDef;
+			bd->gravityScale=0;
+			bd->type = b2_dynamicBody;
+			bd->position.Set(firstx,firsty);
+			bd->fixedRotation = false;
+
+
+			b2PolygonShape poly1;
+			b2Vec2 vertices1[4];
+			vertices1[0].Set(1.5,6);
+			vertices1[1].Set(3,5);
+			vertices1[2].Set(1.5,3);
+			vertices1[3].Set(0,3);
+			poly1.Set(vertices1, 4);
+			b2FixtureDef *fd1 = new b2FixtureDef;
+			fd1->filter.categoryBits = 0x0004;
+			fd1->filter.maskBits = 0x0002;
+			fd1->density = 0.1;
+			fd1->friction = 1.0;
+			fd1->restitution = 0.2f;
+			fd1->shape = &poly1;
+
+			b2PolygonShape poly2;
+			b2Vec2 vertices2[4];
+			vertices2[0].Set(0,3);
+			vertices2[1].Set(0,0);
+			vertices2[2].Set(1.5,0);
+			vertices2[3].Set(1.5,3);
+			poly2.Set(vertices2, 4);
+			b2FixtureDef *fd2 = new b2FixtureDef;
+			fd2->filter.categoryBits = 0x0004;
+			fd2->filter.maskBits = 0x0002;
+			fd2->density = 0.1;
+			fd2->friction = 1.0;
+			fd2->restitution = 0.2f;
+			fd2->shape = &poly2;
+
+			b2PolygonShape poly3;
+			b2Vec2 vertices3[6];
+			vertices3[0].Set(0,0);
+			vertices3[1].Set(1,-1.5);
+			vertices3[2].Set(4,-3);
+			vertices3[3].Set(1.5,0);
+			poly3.Set(vertices3, 4);
+			b2FixtureDef *fd3 = new b2FixtureDef;
+			fd3->filter.categoryBits = 0x0004;
+			fd3->filter.maskBits = 0x0002;
+			fd3->density = 0.1;
+			fd3->friction = 1.0;
+			fd3->restitution = 0.2f;
+			fd3->shape = &poly3;
+
+			body1 = m_world->CreateBody(bd);
+			body1->CreateFixture(fd1);
+			body1->CreateFixture(fd2);
+			body1->CreateFixture(fd3);
+
+
+			// 2nd part
+			
+			//! The below defined polygon shape 'poly' is used for creation of fixture for the body 'body2' <br>
+			//! The below defined fixtures are then provided to the body 'body2' <br>
+			//! Fixture attributes: density=0.1f, friction=1.0f, restitution=0.2f <br>
+
+			b2PolygonShape poly;
+			b2Vec2 vertices[4];
+			vertices[0].Set(-0.3,0);
+			vertices[1].Set(1.2,-1);
+			vertices[2].Set(7.5,4);
+			vertices[3].Set(6.5,5);
+			poly.Set(vertices, 4);
+
+			b2FixtureDef fd;
+			fd.filter.groupIndex = -1;
+			fd.shape = &poly;
+			fd.density = 0.1f;
+			fd.friction = 1.0f;
+			fd.restitution = 0.2f;
+
+			b2BodyDef db;
+			db.type = b2_dynamicBody;
+			db.position.Set(firstx+1, firsty+5);
+			body2 = m_world->CreateBody(&db);
+			body2->CreateFixture(&fd);
+
+
+			//! The b2RevoluteJointDef 'joint1' here is used to create joint between the bodies 'body1' and 'body2' <br>
+			//! The range of movement for this joint is (-0.6*pi, 0.3*pi) <br>
+			joint1.lowerAngle = -0.6f * b2_pi;
+			joint1.upperAngle = 0.3f * b2_pi;
+			joint1.enableLimit = true;
+			joint1.maxMotorTorque =1e2f;
+			joint1.enableMotor = true;
+			
+			//! Variable name: anchor , Datatype: b2Vec2 <br>
+			//! Position of 'anchor' set to (-42.5f, 10.0f). Joint initialized with 'body1','body2' and the anchor point. <br>
+			//! Joint created by passing address of 'joint1' to CreateJoint function, called on 'm_world'.
+			b2Vec2 anchor;
+			anchor.Set(firstx+1.5, firsty+5);
+			joint1.Initialize(body2, body1, anchor);
+			m_world->CreateJoint(&joint1);
+
+
+			// 3rd part
+			//! Variable name: b3_poly, Datatype: b2PolygonShape <br>
+			//! Details: This is used for the creating the fixture for holding
+			b2PolygonShape b3_poly;
+			b2Vec2 b3_ver[4];
+
+			b3_ver[0].Set(firstx+22.5, firsty-18);
+			b3_ver[1].Set(firstx+22, firsty-19);
+			b3_ver[2].Set(firstx+34, firsty-26);
+			b3_ver[3].Set(firstx+34.5, firsty-25);
+			b3_poly.Set(b3_ver, 4);
+
+			b2FixtureDef b3_fd;
+			b3_fd.filter.groupIndex = -1;
+			b3_fd.shape = &b3_poly;
+			b3_fd.density = 0.1f;
+			b3_fd.friction = 1.0;
+			b3_fd.restitution = 0.2f;
+	  }
 
     // New Items in the project
     {
