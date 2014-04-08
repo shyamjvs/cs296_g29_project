@@ -64,6 +64,8 @@ namespace cs296
 	  
 		b2Body* body1;
 		b2Body* body2;
+		b2Body* body4;
+		b2Body* front_body;
 		b2RevoluteJointDef joint1;
 	  
 	  //!**********Ground************************************************************************************************<br><br>
@@ -225,6 +227,238 @@ namespace cs296
 			b3_fd.density = 0.1f;
 			b3_fd.friction = 1.0;
 			b3_fd.restitution = 0.2f;
+			
+			
+			
+			// 4th part; the below horizontal rod
+
+			float frontx = -3, fronty = 8;
+
+			b2PolygonShape b4_poly;
+			b2Vec2 b4_ver[5];
+			b4_ver[0].Set(-1.2,0);
+			b4_ver[1].Set(-0.7,-1);
+			b4_ver[2].Set(25,-1);
+			b4_ver[3].Set(25,1);
+			b4_ver[4].Set(-0.7,1);
+			b4_poly.Set(b4_ver, 5);
+
+			b2FixtureDef b4_fd;
+			b4_fd.filter.groupIndex = -1;
+			b4_fd.shape = &b4_poly;
+			b4_fd.density = 0.1f;
+			b4_fd.friction = 1.0f;
+			b4_fd.restitution = 0.2f;
+
+			b2BodyDef b4_bd;
+			b4_bd.type = b2_dynamicBody;
+			b4_bd.position.Set(frontx, fronty);
+			body4 = m_world->CreateBody(&b4_bd);
+			body4->CreateFixture(&b4_fd);
+
+
+			// the front part using three bodies
+			
+			b2BodyDef *front_bd = new b2BodyDef;
+			front_bd->type = b2_dynamicBody;
+			front_bd->position.Set(frontx+20,fronty-1);
+
+			vertices1[0].Set(5,12);
+			vertices1[1].Set(8,12);
+			vertices1[2].Set(8,3);
+			vertices1[3].Set(5,3);
+			poly1.Set(vertices1, 4);
+			fd1->density = 0.1;
+			fd1->friction = 1.0f;
+			fd1->restitution = 0.2f;
+			fd1->shape = &poly1;
+
+			vertices2[0].Set(5,3);
+			vertices2[1].Set(8,3);
+			vertices2[2].Set(8,-1);
+			vertices2[3].Set(5,-1);
+			vertices2[4].Set(3,0);
+			vertices2[5].Set(3,2);
+			poly2.Set(vertices2, 6);
+			fd2->density = 0.1;
+			fd2->friction = 1.0f;
+			fd2->restitution = 0.2f;
+			fd2->shape = &poly2;
+
+			vertices3[0].Set(5,-1);
+			vertices3[1].Set(8,-1);
+			vertices3[2].Set(12,-6);
+			vertices3[3].Set(5,-2);
+			poly3.Set(vertices3, 4);
+			fd3->density = 0.1;
+			fd3->friction = 1.0f;
+			fd3->restitution = 0.2f;
+			fd3->shape = &poly3;
+
+			front_body = m_world->CreateBody(front_bd);
+			front_body->CreateFixture(fd1);
+			front_body->CreateFixture(fd2);
+			front_body->CreateFixture(fd3);
+
+			// joint between the two bodies
+			b2RevoluteJointDef front_jd;
+			front_jd.lowerAngle = -0.06f * b2_pi;
+			front_jd.upperAngle = 0.1f * b2_pi;
+			front_jd.enableLimit = true;
+			front_jd.maxMotorTorque =1e3f;
+			front_jd.motorSpeed = 0.0f;
+			front_jd.enableMotor = true;
+			b2Vec2 front_anchor;
+			front_anchor.Set(frontx+24.2, fronty-0.2);
+			front_jd.Initialize(body4, front_body, front_anchor);
+			m_world->CreateJoint(&front_jd);
+
+
+
+			// top compression
+
+
+			float firstcomx = 12, firstcomy = 32;
+			// first rod
+			b2Body* firstCom1;
+			b2PolygonShape firstCom1_poly;
+			b2Vec2 firstCom1_ver[4];
+
+			firstCom1_ver[0].Set(-1.5,-0.6);
+			firstCom1_ver[1].Set(0,0);
+			firstCom1_ver[2].Set(5.5,-12.4);
+			firstCom1_ver[3].Set(4,-13);
+			firstCom1_poly.Set(firstCom1_ver, 4);
+
+			b2FixtureDef firstCom1_fd;
+			firstCom1_fd.filter.groupIndex = -1;
+			firstCom1_fd.shape = &firstCom1_poly;
+			firstCom1_fd.density = 0.1f;
+			firstCom1_fd.friction = 1.0f;
+			firstCom1_fd.restitution = 0.2f;
+
+			b2BodyDef firstCom1_bd;
+			firstCom1_bd.type = b2_dynamicBody;
+			firstCom1_bd.position.Set(firstcomx, firstcomy);
+			firstCom1 = m_world->CreateBody(&firstCom1_bd);
+			firstCom1->CreateFixture(&firstCom1_fd);
+
+			//second rod
+			b2Body* firstCom2;
+			b2PolygonShape firstCom2_poly;
+			b2Vec2 firstCom2_ver[4];
+
+			firstCom2_ver[0].Set(0,0);
+			firstCom2_ver[1].Set(1,0.5);
+			firstCom2_ver[2].Set(4.5,-8);
+			firstCom2_ver[3].Set(3.5,-8.5);
+			firstCom2_poly.Set(firstCom2_ver, 4);
+
+			b2FixtureDef firstCom2_fd;
+			firstCom2_fd.filter.groupIndex = -1;
+			firstCom2_fd.shape = &firstCom2_poly;
+			firstCom2_fd.density = 0.1f;
+			firstCom2_fd.friction = 1.0f;
+			firstCom2_fd.restitution = 0.2f;
+
+			b2BodyDef firstCom2_bd;
+			firstCom2_bd.type = b2_dynamicBody;
+			firstCom2_bd.position.Set(firstcomx+5, firstcomy-15);
+			firstCom2 = m_world->CreateBody(&firstCom2_bd);
+			firstCom2->CreateFixture(&firstCom2_fd);
+
+			// the prismatic joint
+			b2PrismaticJointDef jointDef;
+			b2Vec2 worldAxis(-1.0f, 2.3f);
+			jointDef.Initialize(firstCom1, firstCom2, firstCom1->GetWorldCenter(), worldAxis);
+			jointDef.lowerTranslation = 1.0f;
+			jointDef.upperTranslation = 4.0f;
+			jointDef.enableLimit = true;
+			jointDef.maxMotorForce = 1.0f;
+			jointDef.motorSpeed = 0.0f;
+			jointDef.enableMotor = true;
+			m_world->CreateJoint(&jointDef);
+
+
+			// the part which joins firstCom1 with the bulldozer
+			b2Body* jbody;
+			b2PolygonShape jbody_poly;
+			b2Vec2 jbody_ver[6];
+			jbody_ver[0].Set(0.4+firstcomx-3.5,0.4);
+			jbody_ver[1].Set(1.5+firstcomx-3.5,0);
+			jbody_ver[2].Set(4+firstcomx-3.5,5.5);
+			jbody_ver[3].Set(5.1+firstcomx-3.5,5.1);
+			jbody_ver[4].Set(5.5+firstcomx-3.5,4);
+			jbody_ver[5].Set(0+firstcomx-3.5,1.5);
+			jbody_poly.Set(jbody_ver, 6);
+
+			b2FixtureDef jbody_fd;
+			jbody_fd.filter.groupIndex = -1;
+			jbody_fd.shape = &jbody_poly;
+			jbody_fd.density = 0.1f;
+			jbody_fd.friction = 1.0f;
+			jbody_fd.restitution = 0.2f;
+
+			b2BodyDef jbody_bd;
+			jbody_bd.type = b2_dynamicBody;
+			jbody_bd.position.Set(0, firstcomy-9);
+			jbody = m_world->CreateBody(&jbody_bd);
+			jbody->CreateFixture(&jbody_fd);
+
+			// revolute joint b/w the jbody and firstCom1
+			b2RevoluteJointDef top_joint;
+			top_joint.lowerAngle = -0.2f * b2_pi;
+			top_joint.upperAngle = 0.0f * b2_pi;
+			top_joint.enableLimit = true;
+			b2Vec2 top_anchor;
+			top_anchor.Set(firstcomx+1.5, firstcomy-4);
+			top_joint.Initialize(jbody, firstCom1, top_anchor);
+			m_world->CreateJoint(&top_joint);
+
+
+			// bottom compression
+			
+			// first part
+			b2PolygonShape shape1;
+			shape1.SetAsBox(5, 0.5f);
+			
+			b2Body* secondCom1;
+			b2FixtureDef secondCom1_fd;
+			secondCom1_fd.filter.groupIndex = -1;
+			secondCom1_fd.shape = &shape1;
+			secondCom1_fd.density = 0.1f;
+			secondCom1_fd.friction = 1.0f;
+			secondCom1_fd.restitution = 0.2f;
+
+			b2BodyDef secondCom1_bd;
+			secondCom1_bd.type = b2_dynamicBody;
+			secondCom1 = m_world->CreateBody(&secondCom1_bd);
+			secondCom1->CreateFixture(&secondCom1_fd);
+			
+			shape1.SetAsBox(3, 1.5,b2Vec2(6.8,0),0);
+			secondCom1->CreateFixture(&secondCom1_fd);
+			
+			secondCom1->SetTransform( b2Vec2(4,11), 20 * DEGTORAD);
+			
+			
+			// second part
+			b2PolygonShape shape2;
+			shape2.SetAsBox(6.5f, 0.5f);
+			
+			b2Body* secondCom2;
+			b2FixtureDef secondCom2_fd;
+			secondCom2_fd.filter.groupIndex = -1;
+			secondCom2_fd.shape = &shape2;
+			secondCom2_fd.density = 0.1f;
+			secondCom2_fd.friction = 1.0f;
+			secondCom2_fd.restitution = 0.2f;
+
+			b2BodyDef secondCom2_bd;
+			secondCom2_bd.type = b2_dynamicBody;
+			secondCom2 = m_world->CreateBody(&secondCom2_bd);
+			secondCom2->CreateFixture(&secondCom2_fd);
+			
+			secondCom2->SetTransform( b2Vec2(18,16), 20 * DEGTORAD);
 	  }
 
     // New Items in the project
