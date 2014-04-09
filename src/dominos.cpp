@@ -66,6 +66,8 @@ namespace cs296
 		b2Body* body2;
 		b2Body* body4;
 		b2Body* front_body;
+		b2Body* lwheel;
+		b2Body* rwheel;
 		b2RevoluteJointDef joint1;
 	  
 	  //!**********Ground************************************************************************************************<br><br>
@@ -459,6 +461,135 @@ namespace cs296
 			secondCom2->CreateFixture(&secondCom2_fd);
 			
 			secondCom2->SetTransform( b2Vec2(18,16), 20 * DEGTORAD);
+			
+			
+			//************  the wheels
+
+			// left wheel
+
+			float xcenter = -23.0, ycenter = 3.6;
+			float angular_vel = 10;
+			b2CircleShape circle1;
+			circle1.m_radius = 3.0;
+
+
+			b2FixtureDef ballfd1;
+			ballfd1.filter.categoryBits = 0x0002;//
+			ballfd1.filter.maskBits = 0x0004;//
+			ballfd1.filter.groupIndex = -1;
+			ballfd1.shape = &circle1;
+			ballfd1.density = 0.1f;
+			ballfd1.friction = 1.0f;
+			ballfd1.restitution = 0.2f;
+			//ballfd.filter.categoryBits = 0;
+			//ballfd.filter.maskBits = 0;
+
+
+			b2BodyDef ballbd1;
+			ballbd1.type = b2_dynamicBody;
+			ballbd1.position.Set(xcenter, ycenter);
+			lwheel = m_world->CreateBody(&ballbd1);
+			lwheel->CreateFixture(&ballfd1);
+			lwheel->SetAngularVelocity(angular_vel);
+
+
+			// right wheel
+			b2CircleShape circle2;
+			circle2.m_radius = 3.0;
+
+
+			b2FixtureDef ballfd2;
+			ballfd2.filter.categoryBits = 0x0002;//
+			ballfd2.filter.maskBits = 0x0004;//
+			ballfd2.filter.groupIndex = -1;
+			ballfd2.shape = &circle2;
+			ballfd2.density = 0.1f;
+			ballfd2.friction = 1.0f;
+			ballfd2.restitution = 0.2f;
+			//ballfd.filter.categoryBits = 0;
+			//ballfd.filter.maskBits = 0;
+
+
+			b2BodyDef ballbd2;
+			ballbd2.type = b2_dynamicBody;
+			ballbd2.position.Set(xcenter+31, ycenter);
+			rwheel = m_world->CreateBody(&ballbd2);
+			rwheel->CreateFixture(&ballfd2);
+			rwheel->SetAngularVelocity(angular_vel);
+
+
+			// distance joint
+			b2DistanceJointDef disjointDef;
+			disjointDef.Initialize(lwheel, rwheel, b2Vec2(xcenter,ycenter), b2Vec2(xcenter+31,ycenter));
+			disjointDef.collideConnected = true;
+			m_world->CreateJoint(&disjointDef);
+
+
+			///Adding the Chain
+			b2Vec2 vs[76];
+			b2Body* conveyer[76];
+			float chainx = -23.5f, chainy = 6.7;
+
+			b2FixtureDef chainfd;
+			chainfd.filter.categoryBits = 0x0004;
+			chainfd.filter.maskBits = 0x0002;
+			b2PolygonShape chainshape;
+			chainshape.SetAsBox(0.5f, 0.25f);
+			chainfd.shape = &chainshape;
+			chainfd.density=10.0f;
+			chainfd.friction=100.0f;
+			b2BodyDef chainDef;
+			chainDef.type = b2_dynamicBody;
+
+			///The top chain units
+			for (int i = 0; i < 32; ++i)
+			{
+				vs[i].Set(chainx+1.0f*i,chainy);
+				chainDef.position.Set(chainx+0.5+1.0f*i,chainy);
+				conveyer[i]=m_world->CreateBody(&chainDef);
+				conveyer[i]->CreateFixture(&chainfd);
+			}
+
+			///The right chain units
+			chainshape.SetAsBox(0.25f, 0.5f);
+			for (int i = 0; i < 6; ++i)
+			{
+				vs[i+32].Set(chainx+32,chainy-i*1.0f);
+				chainDef.position.Set(chainx+32,chainy-0.5-i*1.0f);
+				conveyer[i+32]=m_world->CreateBody(&chainDef);
+				conveyer[i+32]->CreateFixture(&chainfd);
+			}
+
+			///The Bottom chain units
+			chainshape.SetAsBox(0.5f, 0.25f);
+			for (int i = 0; i < 32; ++i)
+			{
+				vs[i+38].Set(chainx+32-1.0f*i,chainy-6);
+				chainDef.position.Set(chainx+32-0.5-1.0f*i,chainy-6);
+				conveyer[i+38]=m_world->CreateBody(&chainDef);
+				conveyer[i+38]->CreateFixture(&chainfd);	
+			}
+
+			///The left chain units
+			chainshape.SetAsBox(0.25f, 0.5f);
+			for (int i = 0; i < 6; ++i)
+			{
+				vs[i+70].Set(chainx,chainy-6+1.0f*i);
+				chainDef.position.Set(chainx,chainy-6+1.0f*i+.5f);
+				conveyer[i+70] = m_world->CreateBody(&chainDef);
+				conveyer[i+70]->CreateFixture(&chainfd);
+			}
+			//////////////////////////////////////////////////////////////////////////////
+			///Adding Revolute joint between chain units
+			b2RevoluteJointDef jointDef3;
+			for(int i=1;i<76;i++)
+			{
+				jointDef3.Initialize(conveyer[i-1], conveyer[i],vs[i]);
+				m_world->CreateJoint(&jointDef3);
+			}
+
+			jointDef3.Initialize(conveyer[0], conveyer[75],vs[0]);
+			m_world->CreateJoint(&jointDef3);
 	  }
 
     // New Items in the project
