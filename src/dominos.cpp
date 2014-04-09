@@ -61,7 +61,8 @@ namespace cs296
   
   dominos_t::dominos_t()
   {
-	  
+		
+		b2Body* body0;
 		b2Body* body1;
 		b2Body* body2;
 		b2Body* body4;
@@ -590,294 +591,413 @@ namespace cs296
 
 			jointDef3.Initialize(conveyer[0], conveyer[75],vs[0]);
 			m_world->CreateJoint(&jointDef3);
-	  }
+			
 
     // New Items in the project
-    {
+    
       b2BodyDef *bd0 = new b2BodyDef;
-      bd0->type = b2_dynamicBody;
-      bd0->position.Set(0,50);
-      bd0->fixedRotation = false;
-      b2Body* body0 = m_world->CreateBody(bd0);
-      b2FixtureDef *fd0;
+			bd0->type = b2_dynamicBody;
+			bd0->position.Set(-15,28);
+			body0 = m_world->CreateBody(bd0);
+			b2FixtureDef *fd0 = new b2FixtureDef;
+			fd0->filter.groupIndex = -1;
+			fd0->density = 0.1f;
 
-    {
-      b2PolygonShape poly0;             // big square main
-      b2Vec2 vertices[4];
-      vertices[0].Set(-10.0,-10.0);
-      vertices[1].Set(-10.0,10.0); 
-      vertices[2].Set(10.0,10.0);
-      vertices[3].Set(10.0,-10.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;             // big square main
+				b2Vec2 vertices[4];
+				vertices[0].Set(-10.0,-10.0);
+				vertices[1].Set(-10.0,10.0); 
+				vertices[2].Set(10.0,10.0);
+				vertices[3].Set(10.0,-10.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;              // small window(left) inside big square
-      b2Vec2 vertices[4];
-      vertices[0].Set(-7.0,5.5);
-      vertices[1].Set(-1.0,5.5); 
-      vertices[2].Set(-1.0,0.0);
-      vertices[3].Set(-7.0,0.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;              // small window(left) inside big square
+				b2Vec2 vertices[4];
+				vertices[0].Set(-7.0,5.5);
+				vertices[1].Set(-1.0,5.5); 
+				vertices[2].Set(-1.0,0.0);
+				vertices[3].Set(-7.0,0.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;              // above window's shutter
-      b2Vec2 vertices[4];
-      vertices[0].Set(-7.0,6.5);
-      vertices[1].Set(-7.0,7.5); 
-      vertices[2].Set(-1.0,7.5);
-      vertices[3].Set(-1.0,6.5);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;              // above window's shutter
+				b2Vec2 vertices[4];
+				vertices[0].Set(-7.0,6.5);
+				vertices[1].Set(-7.0,7.5); 
+				vertices[2].Set(-1.0,7.5);
+				vertices[3].Set(-1.0,6.5);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;               // small window(right) inside big square
-      b2Vec2 vertices[4];
-      vertices[0].Set(2.0,-7.0);
-      vertices[1].Set(2.0,7.0); 
-      vertices[2].Set(8.0,7.0);
-      vertices[3].Set(8.0,-7.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;               // small window(right) inside big square
+				b2Vec2 vertices[4];
+				vertices[0].Set(2.0,-7.0);
+				vertices[1].Set(2.0,7.0); 
+				vertices[2].Set(8.0,7.0);
+				vertices[3].Set(8.0,-7.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;               // above window's outer border
-      b2Vec2 vertices[4];
-      vertices[0].Set(1.5,-7.5);
-      vertices[1].Set(1.5,7.5); 
-      vertices[2].Set(8.5,7.5);
-      vertices[3].Set(8.5,-7.5);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;               // above window's outer border
+				b2Vec2 vertices[4];
+				vertices[0].Set(1.5,-7.5);
+				vertices[1].Set(1.5,7.5); 
+				vertices[2].Set(8.5,7.5);
+				vertices[3].Set(8.5,-7.5);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                // thin long vertical bar to the left of big square
-      b2Vec2 vertices[4];
-      vertices[0].Set(-12.0,-10.0);
-      vertices[1].Set(-12.0,10.0); 
-      vertices[2].Set(10.0,10.0);
-      vertices[3].Set(10.0,-10.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                // thin long vertical bar to the left of big square
+				b2Vec2 vertices[4];
+				vertices[0].Set(-12.0,-10.0);
+				vertices[1].Set(-12.0,10.0); 
+				vertices[2].Set(10.0,10.0);
+				vertices[3].Set(10.0,-10.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                // thin long horizontal bar above the big square
-      b2Vec2 vertices[4];
-      vertices[0].Set(-14.0,10.0);
-      vertices[1].Set(-14.0,12.0); 
-      vertices[2].Set(14.0,12.0);
-      vertices[3].Set(12.0,10.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                // thin long horizontal bar above the big square
+				b2Vec2 vertices[4];
+				vertices[0].Set(-14.0,10.0);
+				vertices[1].Set(-14.0,12.0); 
+				vertices[2].Set(14.0,12.0);
+				vertices[3].Set(12.0,10.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                 // leftmost block just below big square
-      b2Vec2 vertices[4];
-      vertices[0].Set(-12.0,-10.0);
-      vertices[1].Set(-16.0,-14.0);
-      vertices[2].Set(-6.0,-12.0);
-      vertices[3].Set(-6.0,-10.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                 // leftmost block just below big square
+				b2Vec2 vertices[4];
+				vertices[0].Set(-12.0,-10.0);
+				vertices[1].Set(-16.0,-14.0);
+				vertices[2].Set(-6.0,-12.0);
+				vertices[3].Set(-6.0,-10.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                  // middle block just below big square
-      b2Vec2 vertices[4];
-      vertices[0].Set(-6.0,-12.0);
-      vertices[1].Set(-6.0,-10.0); 
-      vertices[2].Set(6.0,-10.0);
-      vertices[3].Set(6.0,-12.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                  // middle block just below big square
+				b2Vec2 vertices[4];
+				vertices[0].Set(-6.0,-12.0);
+				vertices[1].Set(-6.0,-10.0); 
+				vertices[2].Set(6.0,-10.0);
+				vertices[3].Set(6.0,-12.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                  // rightmost block just below big square
-      b2Vec2 vertices[5];
-      vertices[0].Set(6.0,-12.0);
-      vertices[1].Set(6.0,-10.0); 
-      vertices[2].Set(11.0,-10.0);
-      vertices[3].Set(11.0,-13.0);
-      vertices[4].Set(9.0,-13.0);
-      poly0.Set(vertices, 5);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                  // rightmost block just below big square
+				b2Vec2 vertices[5];
+				vertices[0].Set(6.0,-12.0);
+				vertices[1].Set(6.0,-10.0); 
+				vertices[2].Set(11.0,-10.0);
+				vertices[3].Set(11.0,-13.0);
+				vertices[4].Set(9.0,-13.0);
+				poly0.Set(vertices, 5);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                 // block for the lower body of the bulldozer
-      b2Vec2 vertices[7];
-      vertices[0].Set(-16.0,-14.0);
-      vertices[1].Set(-16.0,-23.0);
-      vertices[2].Set(-14.0,-25.0);
-      vertices[3].Set(9.0,-25.0);
-      vertices[4].Set(9.0,-13.0);
-      vertices[5].Set(6.0,-12.0);
-      vertices[6].Set(-6.0,-12.0);
-      poly0.Set(vertices, 7);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                 // block for the lower body of the bulldozer
+				b2Vec2 vertices[7];
+				vertices[0].Set(-16.0,-14.0);
+				vertices[1].Set(-16.0,-23.0);
+				vertices[2].Set(-14.0,-25.0);
+				vertices[3].Set(9.0,-25.0);
+				vertices[4].Set(9.0,-13.0);
+				vertices[5].Set(6.0,-12.0);
+				vertices[6].Set(-6.0,-12.0);
+				poly0.Set(vertices, 7);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                   // thin vertical bar(lower) to the right of big square
-      b2Vec2 vertices[4];
-      vertices[0].Set(10.0,-10.0);
-      vertices[1].Set(10.0,-1.0); 
-      vertices[2].Set(11.0,-1.0);
-      vertices[3].Set(11.0,-10.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                   // thin vertical bar(lower) to the right of big square
+				b2Vec2 vertices[4];
+				vertices[0].Set(10.0,-10.0);
+				vertices[1].Set(10.0,-1.0); 
+				vertices[2].Set(11.0,-1.0);
+				vertices[3].Set(11.0,-10.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                   // small block to the right of the above bar
-      b2Vec2 vertices[4];
-      vertices[0].Set(11.0,-6.0);
-      vertices[1].Set(11.0,-8.0); 
-      vertices[2].Set(13.0,-8.0);
-      vertices[3].Set(13.0,-6.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                   // small block to the right of the above bar
+				b2Vec2 vertices[4];
+				vertices[0].Set(11.0,-6.0);
+				vertices[1].Set(11.0,-8.0); 
+				vertices[2].Set(13.0,-8.0);
+				vertices[3].Set(13.0,-6.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                   // block attached to the right of the above part
-      b2Vec2 vertices[4];
-      vertices[0].Set(13.0,-10.0);
-      vertices[1].Set(13.0,-4.0); 
-      vertices[2].Set(23.0,-4.0);
-      vertices[3].Set(23.0,-10.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                   // block attached to the right of the above part
+				b2Vec2 vertices[4];
+				vertices[0].Set(13.0,-10.0);
+				vertices[1].Set(13.0,-4.0); 
+				vertices[2].Set(23.0,-4.0);
+				vertices[3].Set(23.0,-10.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                // block projecting out from above the thin vertical bar(right)
-      b2Vec2 vertices[4];
-      vertices[0].Set(10.0,-1.0);
-      vertices[1].Set(10.0,2.5); 
-      vertices[2].Set(25.0,1.5);
-      vertices[3].Set(25.0,-1.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                // block projecting out from above the thin vertical bar(right)
+				b2Vec2 vertices[4];
+				vertices[0].Set(10.0,-1.0);
+				vertices[1].Set(10.0,2.5); 
+				vertices[2].Set(25.0,1.5);
+				vertices[3].Set(25.0,-1.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                   // block for the siren (to the right of big square)
-      b2Vec2 vertices[4];
-      vertices[0].Set(15.0,-4.0);
-      vertices[1].Set(15.0,4.0); 
-      vertices[2].Set(18.0,4.0);
-      vertices[3].Set(18.0,-4.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                   // block for the siren (to the right of big square)
+				b2Vec2 vertices[4];
+				vertices[0].Set(15.0,-4.0);
+				vertices[1].Set(15.0,4.0); 
+				vertices[2].Set(18.0,4.0);
+				vertices[3].Set(18.0,-4.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                   // triangle on top of the siren
-      b2Vec2 vertices[3];
-      vertices[0].Set(14.0,4.0);
-      vertices[1].Set(16.5,7.0); 
-      vertices[2].Set(19.0,4.0);
-      poly0.Set(vertices, 3);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                   // triangle on top of the siren
+				b2Vec2 vertices[3];
+				vertices[0].Set(14.0,4.0);
+				vertices[1].Set(16.5,7.0); 
+				vertices[2].Set(19.0,4.0);
+				poly0.Set(vertices, 3);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                   // block for chimney (to the right of siren)
-      b2Vec2 vertices[4];
-      vertices[0].Set(20.5,-4.0);
-      vertices[1].Set(20.5,8.0); 
-      vertices[2].Set(22.5,8.0);
-      vertices[3].Set(22.5,-4.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                   // block for chimney (to the right of siren)
+				b2Vec2 vertices[4];
+				vertices[0].Set(20.5,-4.0);
+				vertices[1].Set(20.5,8.0); 
+				vertices[2].Set(22.5,8.0);
+				vertices[3].Set(22.5,-4.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                    // outer trapezium to the lower right of big square
-      b2Vec2 vertices[4];
-      vertices[0].Set(9.0,-13.0);
-      vertices[1].Set(25.0,-13.0); 
-      vertices[2].Set(25.0,-25.0);
-      vertices[3].Set(9.0,-20.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                    // outer trapezium to the lower right of big square
+				b2Vec2 vertices[4];
+				vertices[0].Set(9.0,-13.0);
+				vertices[1].Set(25.0,-13.0); 
+				vertices[2].Set(25.0,-25.0);
+				vertices[3].Set(9.0,-20.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                    // inner trapezium to the lower right of big square
-      b2Vec2 vertices[4];
-      vertices[0].Set(11.0,-15.0);
-      vertices[1].Set(23.0,-15.0); 
-      vertices[2].Set(23.0,-23.0);
-      vertices[3].Set(11.0,-19.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                    // inner trapezium to the lower right of big square
+				b2Vec2 vertices[4];
+				vertices[0].Set(11.0,-15.0);
+				vertices[1].Set(23.0,-15.0); 
+				vertices[2].Set(23.0,-23.0);
+				vertices[3].Set(11.0,-19.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    {
-      b2PolygonShape poly0;                    // block attached above the right end of the trapezium
-      b2Vec2 vertices[4];
-      vertices[0].Set(23.0,-13.0);
-      vertices[1].Set(23.0,-3.0); 
-      vertices[2].Set(25.0,-3.0);
-      vertices[3].Set(25.0,-13.0);
-      poly0.Set(vertices, 4);
-      fd0 = new b2FixtureDef();
-      fd0->shape = &poly0;
-      body0->CreateFixture(fd0);
-    }
+			{
+				b2PolygonShape poly0;                    // block attached above the right end of the trapezium
+				b2Vec2 vertices[4];
+				vertices[0].Set(23.0,-13.0);
+				vertices[1].Set(23.0,-3.0); 
+				vertices[2].Set(25.0,-3.0);
+				vertices[3].Set(25.0,-13.0);
+				poly0.Set(vertices, 4);
+				fd0->shape = &poly0;
+				body0->CreateFixture(fd0);
+			}
 
-    }
+    // joint between left wheel and body
+
+			b2RevoluteJointDef lwheeljoint;
+			b2Vec2 left_anchor;
+			left_anchor.Set(xcenter, ycenter);
+			lwheeljoint.Initialize(body0, lwheel, left_anchor);
+			m_world->CreateJoint(&lwheeljoint);
+
+
+			// joint between right wheel and body
+
+			b2RevoluteJointDef rwheeljoint;
+			b2Vec2 right_anchor;
+			right_anchor.Set(xcenter+31, ycenter);
+			rwheeljoint.Initialize(body0, rwheel, right_anchor);
+			m_world->CreateJoint(&rwheeljoint);
+			
+			
+			// fixture to stabilize the chain
+			b2PolygonShape shape;
+			shape.SetAsBox(11.0f, 2.1f);
+
+			//! Variable name: bd , Datatype: b2BodyDef <br>
+			//! Details: Holds data to construct rigid body(the shelf). Position set to (1.0f, 6.0f).
+			bd->position.Set(-8.0f, 4.3);
+			bd->type=b2_dynamicBody;
+			fd.shape=&shape;
+			fd.filter.categoryBits = 0x0002;//
+			fd.filter.maskBits = 0x0004;//
+			fd.filter.groupIndex = -1;
+			fd.friction=0;
+
+
+			//below support for chain
+			b2Body* chain_below = m_world->CreateBody(bd);
+			chain_below->CreateFixture(&fd);
+
+			top_anchor.Set(-19.0f, 6.3);
+			top_joint.Initialize(chain_below, body0, top_anchor);
+			m_world->CreateJoint(&top_joint);
+
+			top_anchor.Set(3.0f, 6.3);
+			top_joint.Initialize(chain_below, body0, top_anchor);
+			m_world->CreateJoint(&top_joint);
+
+			//above support for chain
+			shape.SetAsBox(12.0f, 0.1f);
+			bd->position.Set(-8.0, 7.0);
+			b2Body* chain_above = m_world->CreateBody(bd);
+			chain_above->CreateFixture(&fd);
+
+			top_anchor.Set(-19.0f, 7.0);
+			top_joint.Initialize(chain_above, body0, top_anchor);
+			m_world->CreateJoint(&top_joint);
+
+			top_anchor.Set(3.0f, 7.0);
+			top_joint.Initialize(chain_above, body0, top_anchor);
+			m_world->CreateJoint(&top_joint);
+			
+			// creating fixture for holding the backpack
+			body0->CreateFixture(&b3_fd);
+
+			b2RevoluteJointDef jd23;
+			jd23.lowerAngle = -0.0f * b2_pi;
+			jd23.upperAngle = 0.25f * b2_pi;
+			jd23.enableLimit = true;
+			jd23.maxMotorTorque =1e3f;
+			jd23.motorSpeed = 0.0f;
+			jd23.enableMotor = true;
+			b2Vec2 anchor23;
+			anchor23.Set(firstx+7.5, firsty+9.5);
+			jd23.Initialize(body2, body0, anchor23);
+			m_world->CreateJoint(&jd23);
+
+			//joining horizontal rod to main body
+
+			jd23.lowerAngle = -0.15 * b2_pi;
+			jd23.upperAngle = 0.05f * b2_pi;
+			jd23.enableLimit = true;
+			jd23.maxMotorTorque =1e4f;
+			jd23.motorSpeed = 0.0f;
+			jd23.enableMotor = true;
+			anchor23.Set(frontx, fronty);
+			jd23.Initialize(body4, body0, anchor23);
+			m_world->CreateJoint(&jd23);
+			
+			// revolute joint b/w the jbody and mainbody
+			
+			top_joint.lowerAngle = -0.2f * b2_pi;
+			top_joint.upperAngle = 0.2f * b2_pi;
+			top_joint.enableLimit = true;
+			top_joint.maxMotorTorque =1e3f;
+			top_joint.motorSpeed = 0.0f;
+			top_joint.enableMotor = true;
+			top_anchor.Set(firstcomx-2.5, firstcomy-8);
+			top_joint.Initialize(jbody, body0, top_anchor);
+			m_world->CreateJoint(&top_joint);
+			
+			// revolute joint b/w the front part and top compression
+			
+			top_anchor.Set(firstcomx+9, firstcomy-24);
+			top_joint.Initialize(firstCom2, front_body, top_anchor);
+			m_world->CreateJoint(&top_joint);
+			
+			
+			// joints for second compression
+			
+			//leftmost joint
+			front_jd.lowerAngle = -0.5f * b2_pi;
+			front_jd.upperAngle = 0.5f * b2_pi;
+			front_jd.enableLimit = true;
+			//front_jd.maxMotorTorque =1e3f;
+			front_jd.motorSpeed = 0.0f;
+			front_jd.enableMotor = true;
+			front_anchor.Set(0,9.5);
+			front_jd.Initialize(secondCom1, body0, front_anchor);
+			m_world->CreateJoint(&front_jd);
+			
+			//rightmost joint
+			front_jd.lowerAngle = -0.5f * b2_pi;
+			front_jd.upperAngle = 0.5f * b2_pi;
+			front_jd.enableLimit = true;
+			//front_jd.maxMotorTorque =1e3f;
+			front_jd.motorSpeed = 0.0f;
+			front_jd.enableMotor = true;
+			front_anchor.Set(23.5,18);
+			front_jd.Initialize(secondCom2, front_body, front_anchor);
+			m_world->CreateJoint(&front_jd);
+			
+			// the prismatic joint
+			b2Vec2 worldAxis1(2.7f, 1.0f);
+			jointDef.Initialize(secondCom1, secondCom2, secondCom1->GetWorldCenter(), worldAxis1);
+			jointDef.lowerTranslation = -4.0f;
+			jointDef.upperTranslation = 4.0f;
+			jointDef.enableLimit = true;
+			jointDef.maxMotorForce = 1.0f;
+			jointDef.motorSpeed = 0.0f;
+			jointDef.enableMotor = true;
+			m_world->CreateJoint(&jointDef);
+		}
  }
 
   sim_t *sim = new sim_t("Dominos", dominos_t::create);
