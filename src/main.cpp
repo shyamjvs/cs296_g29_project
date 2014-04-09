@@ -111,8 +111,6 @@ void create_glui_ui(void)
   glui->add_button("Quit", 0,(GLUI_Update_CB)callbacks_t::exit_cb);
   glui->set_main_gfx_window( main_window );
   
-  
-  
   // the new text added
   new GLUI_Column( glui, false );
   
@@ -188,7 +186,7 @@ int main(int argc, char** argv)
   entry = sim;
   test = entry->create_fcn();
 
-/*
+
   //! This initializes GLUT
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
@@ -212,11 +210,11 @@ int main(int argc, char** argv)
   glutTimerFunc(frame_period, callbacks_t::timer_cb, 0);
 
   //! We create the GLUI user interface
-  //create_glui_ui();
+  create_glui_ui();
 
   //! Enter the infinite GLUT event loop
-  //glutMainLoop();
-*/  
+  glutMainLoop();
+
 
   int32 iter_count= (argc==1)?100:atoi(argv[1]);
   float32 step_t=0.0;
