@@ -42,14 +42,6 @@ using namespace std;
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
 
-
-/*
-Ball(b2World* world, uint16 categoryBits, uint16 maskBits) {
-    myFixtureDef.filter.categoryBits = categoryBits;
-    myFixtureDef.filter.maskBits = maskBits;
- }
- */
-
 namespace cs296
 {
 	/** The is the constructor for the physical system to be simulated. <br> 
@@ -684,14 +676,6 @@ namespace cs296
 			rwheel = m_world->CreateBody(&ballbd2);
 			rwheel->CreateFixture(&ballfd2);
 
-/*
-			// distance joint
-			b2DistanceJointDef disjointDef;
-			disjointDef.Initialize(lwheel, rwheel, b2Vec2(xcenter,ycenter), b2Vec2(xcenter+31,ycenter));
-			disjointDef.collideConnected = true;
-			m_world->CreateJoint(&disjointDef);
-
-*/
 			// Chain
 			//! Variable name: chain, Datatype: b2Body* <br>
 			//! Details: Array of pointers to instances of the chain parts

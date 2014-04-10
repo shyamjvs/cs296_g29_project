@@ -45,7 +45,8 @@
 #include <stdlib.h>
 #include <string>
 
-//! Notice the use of extern. Why is it used here?
+//! Notice the use of extern. <br>
+//! This is done in order to use these variables externally from other files.
 namespace cs296
 {
   extern int32 test_index;
@@ -61,8 +62,9 @@ namespace cs296
   extern int32 main_window;
 };
 
-//! This opens up the cs296 namespace
-//! What is the consequence of opening up a namespace?
+//! This opens up the cs296 namespace <br>
+//! The consequence of opening up this namespace is that, the definitions for functions <br>
+//! in this namespace are used by default whenver there is a definition clash
 using namespace cs296;
 
 
@@ -111,7 +113,8 @@ void create_glui_ui(void)
   glui->add_button("Quit", 0,(GLUI_Update_CB)callbacks_t::exit_cb);
   glui->set_main_gfx_window( main_window );
   
-  // the new text added
+  //! This part has been added by us. <br>
+  //! This is to display the controls and their functions on the simulation window
   new GLUI_Column( glui, false );
   
   new GLUI_Column( glui, false );
@@ -139,6 +142,8 @@ void create_glui_ui(void)
   glui->add_statictext("Move Right Claw Down: k");  
 }
 
+//! Function to run iterations of the simulation and find out various computation times <br>
+//! 
 void run_iterations(const int32 iters, float32 &step_t, float32 &coll_t, 
                     float32 &vel_t, float32 &pos_t, float32 &time_diff)
 {
