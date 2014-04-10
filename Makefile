@@ -14,6 +14,7 @@ DOXYGEN = doxygen
 ######################################
 # Project Name (generate executable with this name)
 TARGET = cs296_29_exe
+FOLDER = generate
 
 # Boolean for deciding library linking mode
 SHARED_LIB = FALSE                                    # FALSE for static linking
@@ -25,7 +26,6 @@ EXT_SRC=$(EXTERNAL_ROOT)/src
 SRCDIR = $(PROJECT_ROOT)/src
 OBJDIR = $(PROJECT_ROOT)/myobjs
 BINDIR = $(PROJECT_ROOT)/mybins
-LIBDIR = $(PROJECT_ROOT)/mylibs
 DOCDIR = $(PROJECT_ROOT)/doc
 
 # Library Paths
@@ -37,10 +37,9 @@ GL_ROOT=/usr/include/
 LIBS = -lBox2D -lglui -lglut -lGLU -lGL
 
 # Compiler and Linker flags
-CPPFLAGS =-g -O3 -Wall -fno-strict-aliasing
+CPPFLAGS =-g -Wall -fno-strict-aliasing
 CPPFLAGS+=-I $(BOX2D_ROOT)/include -I $(GLUI_ROOT)/include
-LDFLAGS+=-L $(BOX2D_ROOT)/lib -L $(GLUI_ROOT)/lib
-NEW_LDFLAGS= $(LDFLAGS) -L $(LIBDIR) -Wl,-R$(LIBDIR) '-Wl,-R$$ORIGIN' 
+LDFLAGS+=-p -L $(BOX2D_ROOT)/lib -L $(GLUI_ROOT)/lib
 
 ######################################
 
@@ -63,21 +62,25 @@ SRCS := $(wildcard $(SRCDIR)/*.cpp)
 INCS := $(wildcard $(SRCDIR)/*.hpp)
 OBJS := $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 OBJ_FILES := $(wildcard $(OBJDIR)/*[!main].o)
+DATA_FILES := $(wildcard $(PROJECT_ROOT)/data/*[!pnp_austen].*)
 
-.PHONY: all setup compile exe make_lib exelib doc clean distclean
+.PHONY: all setup exe doc report plot clean distclean dist install
 
-all:    setup
+all:    setup exe doc report
 
 ###################################################################################################################
 
-exe:    setup compile $(BINDIR)/$(TARGET)
+install:
+	@mkdir -p $(FOLDER); \
+	@cp $(BINDIR)/$(TARGET) $(FOLDER); \
+	@cp -R $(DOCDIR)/html $(FOLDER); \
+	@cp $(DOCDIR)/cs296_report_29.pdf;
 
 setup:
 	@$(ECHO) -n "Setting up directories myobjs, mybins, mylibs..."
 	@mkdir -p myobjs
 	@mkdir -p mybins
-	@mkdir -p mylibs
-	@$(ECHO) "Done" 
+	@$(ECHO) "Done"
 	@if test -d $(EXTERNAL_ROOT)/include/Box2D -a -d $(EXTERNAL_ROOT)/lib/Box2D; \
 	then $(ECHO) "Box2D package found already installed";\
 	else $(ECHO) "Box2D package not found...Installing now..."; \
@@ -95,11 +98,9 @@ setup:
 	$(ECHO) "Installing Box2D using make...";\
 	cd $(EXT_SRC)/Box2D/build296; make; make install; \
 	$(ECHO) "Done";\
-	fi
+	fi;
 
 -include $(OBJS:.o=.d)
-
-compile: $(OBJS)
 
 $(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@$(PRINTF) "$(MESG_COLOR)Compiling: $(NO_COLOR) $(FILE_COLOR) %25s$(NO_COLOR)" "$(notdir $<)"
@@ -112,9 +113,9 @@ $(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
         fi;
 	@$(RM) -f temp.log temp.err
 
-$(BINDIR)/$(TARGET):
+exe: $(OBJS)   
 	@$(PRINTF) "$(MESG_COLOR)Building executable:$(NO_COLOR) $(FILE_COLOR) %16s$(NO_COLOR)" "$(notdir $@)"
-	@$(CC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) 2> temp.log || touch temp.err
+	@$(CC) -o $(PROJECT_ROOT)/mybins/$(TARGET) $(LDFLAGS) $(OBJS) $(LIBS) 2> temp.log || touch temp.err
 	@if test -e temp.err; \
 	then $(PRINTF) $(ERR_FMT) $(ERR_STRING) && $(CAT) temp.log; \
 	elif test -s temp.log; \
@@ -123,42 +124,6 @@ $(BINDIR)/$(TARGET):
 	fi;
 	@$(RM) -f temp.log temp.err
 
-###################################################################################################################
-
-exelib: make_lib
-	@$(ECHO) "Linking the appropriate library with main.o..."
-	@$(ECHO) "Making the executable..."
-	@$(CC) -o $(BINDIR)/cs296_29_exelib $(NEW_LDFLAGS) -L $(LIBDIR) $(OBJDIR)/main.o -lCS296test $(LIBS)
-	@$(ECHO) "All Done"
-	 
-
-make_lib: 
-	@if test $(SHARED_LIB) = TRUE ; \
-	then make dynamic; \
-	else make static; \
-	fi;
-
-static: 
-	@$(PRINTF) "$(MESG_COLOR)Compiling object files into static library: $(NO_COLOR)\n" 
-	@$(AR) -cvq $(LIBDIR)/libCS296test.a $(OBJ_FILES) 2> temp.log || touch temp.err
-	@if test -e temp.err; \
-        then $(PRINTF) $(ERR_FMT) $(ERR_STRING) && $(CAT) temp.log; \
-        elif test -s temp.log; \
-        then $(PRINTF) $(WARN_FMT) $(WARN_STRING) && $(CAT) temp.log; \
-        else $(PRINTF) "$(OK_COLOR) $(OK_STRING) $(NO_COLOR)\n"; \
-        fi;
-	@$(RM) -f temp.log temp.err
- 	
-dynamic: 
-	@$(PRINTF) "$(MESG_COLOR)Compiling object files into dynamic library: $(NO_COLOR)\n"
-	@$(CC) -shared -Wl,-soname,$(LIBDIR)/libCS296test.so -o $(LIBDIR)/libCS296test.so $(OBJ_FILES) 2> temp.log || touch temp.err
-	@if test -e temp.err; \
-        then $(PRINTF) $(ERR_FMT) $(ERR_STRING) && $(CAT) temp.log; \
-        elif test -s temp.log; \
-        then $(PRINTF) $(WARN_FMT) $(WARN_STRING) && $(CAT) temp.log; \
-        else $(PRINTF) "$(OK_COLOR) $(OK_STRING) $(NO_COLOR)\n"; \
-        fi;
-	@$(RM) -f temp.log temp.err
 
 ###################################################################################################################
 
@@ -168,13 +133,43 @@ doc:
 	@$(DOXYGEN) $(DOCDIR)/Doxyfile 2 > /dev/null
 	@$(ECHO) "Done"
 
-clean:
-	@$(ECHO) -n "Cleaning up executables, object files and libraries..."
-	@$(RM) -rf $(OBJDIR)/* $(BINDIR)/* $(LIBDIR)/* $(DEPS) $(SRCDIR)/*~
+report:
+	@cd  $(PROJECT_ROOT)/doc \
+	&& pdflatex  g29_prof_report.tex \
+
+plot: 
+	@cd ./scripts; \
+	chmod +x *;\ 
+	python3.3 g29_gen_csv.py;\ 
+	echo -n "Finished script 1.\n";\ 
+	python3.3 g29_gen_plots.py;\ 
+	echo -n "Finished script 2.\n";\ 
 	@$(ECHO) "Done"
+
+###################################################################################################################
+
+clean:
+	@$(ECHO) -n "Cleaning up executables, object files..."
+	@$(RM) -rf $(OBJDIR)/* $(BINDIR)/* $(DEPS) $(SRCDIR)/*~
+	@$(RM) -rf $(DOCDIR)/*.aux $(DOCDIR)/*.bbl $(DOCDIR)/*.blg $(DOCDIR)/*.dvi $(DOCDIR)/*.log $(DOCDIR)/*.pdf $(DOCDIR)/html
+	@$(ECHO) "Done"
+	@rm -rf g29_release_prof.dat
+	@rm -rf g29_debug_prof.dat
+	@rm -rf release.png
+	@rm -rf debug.png
+	@rm -rf gmon.out
+	@$(ECHO) -n "Cleaning up data and plots ..."
+	@$(RM) -rf $(DATA_FILES) $(PROJECT_ROOT)/plots $(PROJECT_ROOT)/scripts/fit.log
+	@$(ECHO) "Done"
+
 
 distclean: clean
 	@$(ECHO) -n "Uninstalling Box2D..."
 	@$(RM) -rf $(EXTERNAL_ROOT)/include/* $(EXTERNAL_ROOT)/lib/* $(EXT_SRC)/Box2D $(DOCDIR)/html
-	@$(RM) -rf $(LIBDIR) $(BINDIR) $(OBJDIR)
+	@$(RM) -rf $(BINDIR) $(OBJDIR)
 	@$(ECHO) "Removed"
+
+dist: distclean
+	@cd ../; \
+	tar cf cs296_g29_project.tar README.txt cs296_base_code; \
+	gzip cs296_g29_project.tar;
