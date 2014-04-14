@@ -122,7 +122,7 @@ f2.write("<body>\n")
 
 lines = f.readlines()
 citation_count = 1    
-for i in range(7,157): 
+for i in range(7,158): 
     new_line = convert(lines[i],citation_count,True)
     f2.write(new_line)
 
@@ -134,7 +134,7 @@ f2.write("[2] : <a href= 'http://www.box2d.org/manual.html'>http://www.box2d.org
 f2.write("[3] : <a href='http://matplotlib.org/'>http://matplotlib.org/</a> <br>\n")
 f2.write("[4] : <a href='http://gprof2dot.jrfonseca.googlecode.com/git/gprof2dot.py'>http://gprof2dot.jrfonseca.googlecode.com/git/gprof2dot.py</a> <br>\n")
 f2.write("<br><br>\n")
-f2.write("<a href='www.cse.iitb.ac.in/~jvs/project.html'>Link to the project page</a>\n")
+f2.write("<a href='http://www.cse.iitb.ac.in/~jvs/project.html'>Link to the project page</a>\n")
 f2.write("</body>\n")
 f2.write("</html>\n")
 f2.close()
