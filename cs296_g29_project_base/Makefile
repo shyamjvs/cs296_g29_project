@@ -72,9 +72,9 @@ all:    setup exe doc report
 
 install:
 	@mkdir -p $(FOLDER); \
-	@cp $(BINDIR)/$(TARGET) $(FOLDER); \
-	@cp -R $(DOCDIR)/html $(FOLDER); \
-	@cp $(DOCDIR)/cs296_report_29.pdf;
+	cp $(BINDIR)/$(TARGET) $(FOLDER); \
+	cp -R $(DOCDIR)/html $(FOLDER); \
+	cp $(DOCDIR)/g29_project_report.pdf $(FOLDER);
 
 setup:
 	@$(ECHO) -n "Setting up directories myobjs, mybins, mylibs..."
@@ -113,7 +113,7 @@ $(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
         fi;
 	@$(RM) -f temp.log temp.err
 
-exe: $(OBJS)   
+exe: setup $(OBJS)   
 	@$(PRINTF) "$(MESG_COLOR)Building executable:$(NO_COLOR) $(FILE_COLOR) %16s$(NO_COLOR)" "$(notdir $@)"
 	@$(CC) -o $(PROJECT_ROOT)/mybins/$(TARGET) $(LDFLAGS) $(OBJS) $(LIBS) 2> temp.log || touch temp.err
 	@if test -e temp.err; \
@@ -134,8 +134,17 @@ doc:
 	@$(ECHO) "Done"
 
 report:
-	@cd  $(PROJECT_ROOT)/doc \
-	&& pdflatex  g29_prof_report.tex \
+	@$(ECHO) "Creating a pdf for the report from latex file..."
+	@ cd doc ; \
+	pdflatex g29_project_report; \
+	bibtex g29_project_report; \
+	pdflatex g29_project_report; \
+	pdflatex g29_project_report; \
+	pdflatex g29_project_report; \
+	cd ../scripts; \
+	python3.3 g29_gen_html.py; 
+	@$(ECHO) "Done"
+
 
 plot: 
 	@cd ./scripts; \
@@ -151,7 +160,7 @@ plot:
 clean:
 	@$(ECHO) -n "Cleaning up executables, object files..."
 	@$(RM) -rf $(OBJDIR)/* $(BINDIR)/* $(DEPS) $(SRCDIR)/*~
-	@$(RM) -rf $(DOCDIR)/*.aux $(DOCDIR)/*.bbl $(DOCDIR)/*.blg $(DOCDIR)/*.dvi $(DOCDIR)/*.log $(DOCDIR)/*.pdf $(DOCDIR)/html
+	@$(RM) -rf $(DOCDIR)/*.aux $(DOCDIR)/*.bbl $(DOCDIR)/*.blg $(DOCDIR)/*.dvi $(DOCDIR)/*.log $(DOCDIR)/*.pdf $(DOCDIR)/html $(DOCDIR)/*.html
 	@$(ECHO) "Done"
 	@rm -rf g29_release_prof.dat
 	@rm -rf g29_debug_prof.dat
@@ -166,10 +175,10 @@ clean:
 distclean: clean
 	@$(ECHO) -n "Uninstalling Box2D..."
 	@$(RM) -rf $(EXTERNAL_ROOT)/include/* $(EXTERNAL_ROOT)/lib/* $(EXT_SRC)/Box2D $(DOCDIR)/html
-	@$(RM) -rf $(BINDIR) $(OBJDIR)
+	@$(RM) -rf $(BINDIR) $(OBJDIR) $(FOLDER)
 	@$(ECHO) "Removed"
 
 dist: distclean
 	@cd ../; \
-	tar cf cs296_g29_project.tar README.txt cs296_base_code; \
+	tar cf cs296_g29_project.tar README.txt cs296_g29_project_base; \
 	gzip cs296_g29_project.tar;

@@ -76,7 +76,7 @@ def convert(line, citation_count, want_newline):
     elif token[0].find("maketitle") != -1 or token[0].find("date")!=-1:
         new_line = ""
     elif token[0].find("includegraphics") != -1:
-        new_line = '<center>\n<img width="800" style="padding:0.5cm" src= "' + token[1] + '">\n</center>'
+        new_line = '<center>\n<img width="800" style="padding:0.5cm" src= "' + token[1] + '.png'+'">\n</center>'
     elif token[0].find("begin") != -1:
         new_line = "<div>"
     elif token[0].find("end") != -1:
@@ -104,8 +104,8 @@ def convert(line, citation_count, want_newline):
 ######### Code for the parser ############################
 
 import re
-f = open("../doc/g29_prof_report.tex")
-f2 = open("../doc/g29_lab09_report.html",'w')
+f = open("../doc/g29_project_report.tex")
+f2 = open("../doc/g29_project_report.html",'w')
 
 f2.write("<!DOCTYPE html>\n")
 f2.write("<html>\n")
@@ -122,7 +122,7 @@ f2.write("<body>\n")
 
 lines = f.readlines()
 citation_count = 1    
-for i in range(7,157): 
+for i in range(7,158): 
     new_line = convert(lines[i],citation_count,True)
     f2.write(new_line)
 
@@ -133,6 +133,8 @@ f2.write("<div>[1] : <a href= 'http://en.wikipedia.org/wiki/Bulldozer/'>http://e
 f2.write("[2] : <a href= 'http://www.box2d.org/manual.html'>http://www.box2d.org/manual.html</a> <br>\n")
 f2.write("[3] : <a href='http://matplotlib.org/'>http://matplotlib.org/</a> <br>\n")
 f2.write("[4] : <a href='http://gprof2dot.jrfonseca.googlecode.com/git/gprof2dot.py'>http://gprof2dot.jrfonseca.googlecode.com/git/gprof2dot.py</a> <br>\n")
+f2.write("<br><br>\n")
+f2.write("<a href='http://www.cse.iitb.ac.in/~jvs/project.html'>Link to the project page</a>\n")
 f2.write("</body>\n")
 f2.write("</html>\n")
 f2.close()

@@ -28,13 +28,13 @@
 namespace cs296
 {
   //! This is the class that sets up the Box2D simulation world
-  //! We inherit this from the base_sim_t class which actually takes care of the simulation
+  //! Notice the public inheritance - why do we inherit the base_sim_t class?
   class dominos_t : public base_sim_t
   {
   public:
     
     dominos_t();
-    //! Added this line in order to capture keyboard events
+    //newline added
     void keyboard(unsigned char key);
     
     static base_sim_t* create()

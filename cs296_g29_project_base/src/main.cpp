@@ -41,12 +41,9 @@
 //! These are usually available at standard system paths like /usr/include
 //! Read about the use of include files in C++
 #include <cstdio>
-#include <sys/time.h>
-#include <stdlib.h>
-#include <string>
 
-//! Notice the use of extern. <br>
-//! This is done in order to use these variables externally from other files.
+
+//! Notice the use of extern. Why is it used here?
 namespace cs296
 {
   extern int32 test_index;
@@ -62,9 +59,8 @@ namespace cs296
   extern int32 main_window;
 };
 
-//! This opens up the cs296 namespace <br>
-//! The consequence of opening up this namespace is that, the definitions for functions <br>
-//! in this namespace are used by default whenver there is a definition clash
+//! This opens up the cs296 namespace
+//! What is the consequence of opening up a namespace?
 using namespace cs296;
 
 
@@ -112,75 +108,9 @@ void create_glui_ui(void)
   
   glui->add_button("Quit", 0,(GLUI_Update_CB)callbacks_t::exit_cb);
   glui->set_main_gfx_window( main_window );
-  
-  //! This part has been added by us. <br>
-  //! This is to display the controls and their functions on the simulation window
-  new GLUI_Column( glui, false );
-  
-  new GLUI_Column( glui, false );
-  glui->add_statictext("Bull Dozer Controls"); 
-  glui->add_statictext("Move Bulldozer Right: d");
-  glui->add_statictext("Move Bulldozer Left: a");
-  glui->add_statictext("Stop the Bulldozer: f");
-  
-  new GLUI_Column( glui, false );
-  
-  new GLUI_Column( glui, false );
-  glui->add_statictext("Back Arm Controls"); 
-  glui->add_statictext("Move Left Arm Up: u"); 
-  glui->add_statictext("Move Left Arm Down: j");
-  glui->add_statictext("Move Left Claw Up: y");   
-  glui->add_statictext("Move Left Claw Down: h");
-  
-  new GLUI_Column( glui, false );
-  
-  new GLUI_Column( glui, false );
-  glui->add_statictext("Front Arm Controls"); 
-  glui->add_statictext("Move Right Arm Up: o"); 
-  glui->add_statictext("Move Right Arm Down: l");
-  glui->add_statictext("Move Right Claw Up: i");   
-  glui->add_statictext("Move Right Claw Down: k");  
 }
 
-//! Function to run iterations of the simulation and find out various computation times <br>
-//! 
-void run_iterations(const int32 iters, float32 &step_t, float32 &coll_t, 
-                    float32 &vel_t, float32 &pos_t, float32 &time_diff)
-{
-  
-  b2World* world= test->get_world();
-  const b2Profile& profile = world->GetProfile();
-  
-  struct timeval tval;
-  gettimeofday(&tval, NULL);
 
-  long double curr_t= tval.tv_usec/1000.0 + 1000.0*tval.tv_sec;
-  for(int32 i=0; i<iters; i++){
-    test->step(&settings);
-    coll_t += profile.collide;
-    vel_t += profile.solveVelocity;
-    pos_t += profile.solvePosition;
-    step_t += profile.step;
-  }
-
-  gettimeofday(&tval, NULL);
-  long double new_t= tval.tv_usec/1000.0 + 1000.0*tval.tv_sec;
-  long double diff= new_t - curr_t;
-  time_diff = diff;
-}
-
-void print_info(const int32 iters, const float32 step_time, 
-                const float32 coll_time, const float32 vel_time,
-                const float32 pos_time, const float32 time_diff)
-{
-  printf("Number of Iterations: %d\n", iters);
-  printf("Average time per step is %f ms\n", step_time/iters);
-  printf("Average time for collisions is %f ms\n", coll_time/iters);
-  printf("Average time for velocity updates is %f ms\n", vel_time/iters);
-  printf("Average time for position updates is %f ms\n\n", pos_time/iters);
-  printf("Total loop time is %f ms\n", time_diff);
-}
- 
 //! This is the main function
 int main(int argc, char** argv)
 {
@@ -191,17 +121,15 @@ int main(int argc, char** argv)
   entry = sim;
   test = entry->create_fcn();
 
-
   //! This initializes GLUT
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
   glutInitWindowSize(width, height);
 
-  char title[50];
-  sprintf(title, "CS296 Base Code. Running on Box2D %d.%d.%d", b2_version.major, b2_version.minor, b2_version.revision);
+  char title[63];
+  sprintf(title, "CS296 Base Code for Group 29. Running on Box2D %d.%d.%d", b2_version.major, b2_version.minor, b2_version.revision);
   main_window = glutCreateWindow(title);
 
- 
   //! Here we setup all the callbacks we need
   //! Some are set via GLUI
   GLUI_Master.set_glutReshapeFunc(callbacks_t::resize_cb);  
@@ -219,17 +147,6 @@ int main(int argc, char** argv)
 
   //! Enter the infinite GLUT event loop
   glutMainLoop();
-
-
-  int32 iter_count= (argc==1)?100:atoi(argv[1]);
-  float32 step_t=0.0;
-  float32 coll_t=0.0;
-  float32 vel_t=0.0;
-  float32 pos_t=0.0; 
-  float32 time_diff=0.0;
-
-  run_iterations(iter_count, step_t, coll_t, vel_t, pos_t, time_diff);
-  print_info(iter_count, step_t, coll_t, vel_t, pos_t, time_diff);
-
+  
   return 0;
 }
